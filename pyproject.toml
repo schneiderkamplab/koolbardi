@@ -3,6 +3,7 @@ name = "koolbardi"
 version = "0.1.0"
 description = "Resumable bilingual Magpie-style synthetic conversation generation"
 readme = "README.md"
+license = "Apache-2.0"
 requires-python = ">=3.11"
 dependencies = [
     "httpx>=0.27",
@@ -28,4 +29,3 @@ packages = ["src/koolbardi"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-
