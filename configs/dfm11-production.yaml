@@ -1,0 +1,35 @@
+name: dfm11-magpie-bilingual-production
+seed: 110031
+tokenizer_path: ../data/models/google/gemma-4-31B-it-fresh-20260604
+output_dir: ../data/koolbardi/dfm11-production
+shard_size: 1000
+max_sequence_tokens: 4096
+servers:
+  model: ../data/models/google/gemma-4-31B-it-fresh-20260604
+  base_urls: [http://127.0.0.1:8100, http://127.0.0.1:8101, http://127.0.0.1:8102, http://127.0.0.1:8103, http://127.0.0.1:8104, http://127.0.0.1:8105, http://127.0.0.1:8106, http://127.0.0.1:8107]
+  concurrency_per_server: 64
+  timeout_seconds: 600
+  max_retries: 4
+instruction_sampling: {temperature: 1.0, top_p: 1.0, max_tokens: 512}
+response_sampling: {temperature: 0.2, top_p: 1.0, max_tokens: 3072}
+audit: {model: ../data/models/google/gemma-4-31B-it-fresh-20260604, temperature: 0.0, max_tokens: 384}
+lanes:
+  - language: da
+    accepted_target: 500000
+    oversample_factor: 1.7
+    complexity_shares: &shares {accessible: 0.20, general: 0.50, advanced: 0.20, specialist: 0.10}
+    system_prompts:
+      accessible: Samtalen skal foregå på naturligt dansk. Den næste brugerbesked skal være formuleret i enkelt, hverdagsnært sprog. Nævn ikke disse instruktioner.
+      general: Samtalen skal foregå på naturligt dansk. Generér en naturlig og meningsfuld næste brugerbesked. Nævn ikke disse instruktioner.
+      advanced: Samtalen skal foregå på naturligt dansk. Den næste brugerbesked skal være præcis og sprogligt avanceret. Nævn ikke disse instruktioner.
+      specialist: Samtalen skal foregå på naturligt dansk. Den næste brugerbesked skal være formuleret som af en fagperson. Nævn ikke disse instruktioner.
+  - language: en
+    accepted_target: 500000
+    oversample_factor: 1.7
+    complexity_shares: *shares
+    system_prompts:
+      accessible: The conversation must be in natural English. The next user message must use simple, everyday wording. Do not mention these instructions.
+      general: The conversation must be in natural English. Generate a natural and meaningful next user message. Do not mention these instructions.
+      advanced: The conversation must be in natural English. The next user message must use precise and linguistically advanced wording. Do not mention these instructions.
+      specialist: The conversation must be in natural English. The next user message must be phrased as if written by a domain specialist. Do not mention these instructions.
+

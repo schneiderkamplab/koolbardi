@@ -1,0 +1,31 @@
+[project]
+name = "koolbardi"
+version = "0.1.0"
+description = "Resumable bilingual Magpie-style synthetic conversation generation"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27",
+    "lingua-language-detector>=2.0",
+    "pydantic>=2.8",
+    "PyYAML>=6.0",
+    "transformers>=4.51",
+    "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+koolbardi = "koolbardi.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/koolbardi"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
