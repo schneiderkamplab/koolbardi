@@ -1,0 +1,193 @@
+version: 1
+domains:
+  - id: everyday_life
+    topics:
+      - {id: household_maintenance, en: household maintenance, da: vedligeholdelse af hjemmet}
+      - {id: cooking_meals, en: cooking and meal planning, da: madlavning og madplaner}
+      - {id: food_safety, en: food safety and storage, da: fødevaresikkerhed og opbevaring}
+      - {id: gardening, en: gardening and plant care, da: havebrug og plantepleje}
+      - {id: clothing_care, en: clothing selection and care, da: valg og pleje af tøj}
+      - {id: consumer_choices, en: informed consumer choices, da: oplyste forbrugsvalg}
+      - {id: budgeting, en: household budgeting, da: husholdningsbudget}
+      - {id: personal_admin, en: personal administration, da: personlig administration}
+  - id: mobility_travel
+    topics:
+      - {id: local_transport, en: local transportation, da: lokal transport}
+      - {id: commuting, en: commuting and route planning, da: pendling og ruteplanlægning}
+      - {id: accessible_travel, en: accessible travel, da: tilgængelige rejser}
+      - {id: sustainable_travel, en: sustainable travel choices, da: bæredygtige rejsevalg}
+      - {id: trip_logistics, en: travel logistics, da: rejselogistik}
+      - {id: cultural_travel, en: culturally informed travel, da: kulturelt oplyste rejser}
+      - {id: relocation, en: relocation and settling in, da: flytning og etablering}
+      - {id: navigation, en: navigation and spatial planning, da: navigation og rumlig planlægning}
+  - id: health_wellbeing
+    topics:
+      - {id: exercise, en: exercise and physical activity, da: motion og fysisk aktivitet}
+      - {id: sleep, en: sleep habits, da: søvnvaner}
+      - {id: nutrition, en: general nutrition, da: generel ernæring}
+      - {id: stress, en: stress management, da: stresshåndtering}
+      - {id: accessibility, en: accessibility and assistive practices, da: tilgængelighed og hjælpemidler}
+      - {id: workplace_wellbeing, en: workplace wellbeing, da: trivsel på arbejdspladsen}
+      - {id: health_services, en: navigating health services, da: navigation i sundhedsvæsenet}
+      - {id: health_information, en: interpreting general health information, da: forståelse af generel sundhedsinformation}
+  - id: education_learning
+    topics:
+      - {id: early_learning, en: early learning, da: tidlig læring}
+      - {id: primary_school, en: primary school learning, da: læring i grundskolens yngste klasser}
+      - {id: secondary_school, en: secondary school learning, da: læring i udskolingen og gymnasiet}
+      - {id: vocational_education, en: vocational education, da: erhvervsuddannelse}
+      - {id: university_study, en: university study, da: universitetsstudier}
+      - {id: teaching_methods, en: teaching methods, da: undervisningsmetoder}
+      - {id: study_strategies, en: study strategies, da: studiestrategier}
+      - {id: lifelong_learning, en: continuing and lifelong learning, da: efteruddannelse og livslang læring}
+  - id: language_information
+    topics:
+      - {id: language_learning, en: language learning, da: sprogindlæring}
+      - {id: grammar_usage, en: grammar and usage, da: grammatik og sprogbrug}
+      - {id: translation, en: translation choices, da: oversættelsesvalg}
+      - {id: information_literacy, en: information literacy, da: informationskompetence}
+      - {id: source_criticism, en: source criticism, da: kildekritik}
+      - {id: research_search, en: research and search strategies, da: research- og søgestrategier}
+      - {id: documentation, en: documentation practices, da: dokumentationspraksis}
+      - {id: knowledge_organization, en: knowledge organization, da: organisering af viden}
+  - id: business_work
+    topics:
+      - {id: entrepreneurship, en: entrepreneurship, da: iværksætteri}
+      - {id: project_management, en: project management, da: projektledelse}
+      - {id: operations, en: operations and process improvement, da: drift og procesforbedring}
+      - {id: accounting, en: accounting and bookkeeping, da: regnskab og bogføring}
+      - {id: finance, en: finance and financial analysis, da: finansiering og økonomisk analyse}
+      - {id: human_resources, en: human resources, da: personaleledelse}
+      - {id: marketing, en: marketing and audience analysis, da: markedsføring og målgruppeanalyse}
+      - {id: workplace_communication, en: workplace communication, da: kommunikation på arbejdspladsen}
+  - id: public_professions
+    topics:
+      - {id: healthcare_work, en: healthcare work, da: sundhedsfagligt arbejde}
+      - {id: social_work, en: social work, da: socialt arbejde}
+      - {id: education_work, en: professional education practice, da: professionel undervisningspraksis}
+      - {id: legal_work, en: legal reasoning and practice, da: juridisk ræsonnement og praksis}
+      - {id: public_administration, en: public administration, da: offentlig administration}
+      - {id: journalism, en: journalism, da: journalistik}
+      - {id: library_museum_work, en: library and museum work, da: biblioteks- og museumsarbejde}
+      - {id: emergency_planning, en: emergency and contingency planning, da: beredskabsplanlægning}
+  - id: industry_trades
+    topics:
+      - {id: agriculture, en: agriculture and farming, da: landbrug}
+      - {id: skilled_trades, en: skilled trades, da: håndværksfag}
+      - {id: manufacturing, en: manufacturing, da: fremstilling}
+      - {id: logistics, en: logistics and supply chains, da: logistik og forsyningskæder}
+      - {id: retail, en: retail operations, da: detailhandel}
+      - {id: hospitality, en: hospitality operations, da: hotel- og restaurationsdrift}
+      - {id: quality_assurance, en: quality assurance, da: kvalitetssikring}
+      - {id: occupational_safety, en: occupational safety, da: arbejdsmiljø og sikkerhed}
+  - id: natural_science
+    topics:
+      - {id: physics, en: physics, da: fysik}
+      - {id: chemistry, en: chemistry, da: kemi}
+      - {id: biology, en: biology, da: biologi}
+      - {id: earth_science, en: earth science, da: geovidenskab}
+      - {id: climate_science, en: climate science, da: klimavidenskab}
+      - {id: astronomy, en: astronomy, da: astronomi}
+      - {id: ecology, en: ecology and ecosystems, da: økologi og økosystemer}
+      - {id: laboratory_methods, en: laboratory methods, da: laboratoriemetoder}
+  - id: math_data
+    topics:
+      - {id: arithmetic, en: practical arithmetic, da: praktisk regning}
+      - {id: algebra, en: algebra, da: algebra}
+      - {id: geometry, en: geometry, da: geometri}
+      - {id: calculus, en: calculus, da: matematisk analyse}
+      - {id: probability, en: probability, da: sandsynlighedsregning}
+      - {id: statistics, en: statistics, da: statistik}
+      - {id: data_analysis, en: data analysis, da: dataanalyse}
+      - {id: experimental_design, en: experimental design, da: forsøgsdesign}
+  - id: engineering_energy
+    topics:
+      - {id: materials, en: materials science, da: materialevidenskab}
+      - {id: energy_systems, en: energy systems, da: energisystemer}
+      - {id: electronics, en: electronics, da: elektronik}
+      - {id: mechanical_engineering, en: mechanical engineering, da: maskinteknik}
+      - {id: civil_engineering, en: civil engineering, da: byggeri og anlæg}
+      - {id: environmental_engineering, en: environmental engineering, da: miljøteknik}
+      - {id: control_systems, en: control systems, da: reguleringsteknik}
+      - {id: product_design, en: technical product design, da: teknisk produktdesign}
+  - id: computing
+    topics:
+      - {id: programming, en: programming, da: programmering}
+      - {id: debugging, en: debugging, da: fejlsøgning i software}
+      - {id: software_testing, en: software testing, da: softwaretest}
+      - {id: databases, en: databases, da: databaser}
+      - {id: data_engineering, en: data engineering, da: data engineering}
+      - {id: systems_networking, en: computer systems and networking, da: computersystemer og netværk}
+      - {id: cybersecurity, en: defensive cybersecurity, da: defensiv cybersikkerhed}
+      - {id: machine_learning, en: machine learning, da: maskinlæring}
+  - id: software_practice
+    topics:
+      - {id: web_development, en: web development, da: webudvikling}
+      - {id: automation, en: automation and scripting, da: automatisering og scripting}
+      - {id: software_architecture, en: software architecture, da: softwarearkitektur}
+      - {id: devops, en: deployment and operations, da: udrulning og softwaredrift}
+      - {id: api_design, en: API design, da: API-design}
+      - {id: technical_support, en: technical support, da: teknisk support}
+      - {id: computing_accessibility, en: accessible computing, da: digital tilgængelighed}
+      - {id: technical_writing, en: technical writing, da: teknisk formidling}
+  - id: society_humanities
+    topics:
+      - {id: history, en: history, da: historie}
+      - {id: geography, en: human geography, da: kultur- og samfundsgeografi}
+      - {id: civics, en: civics and democratic participation, da: samfundsforhold og demokratisk deltagelse}
+      - {id: economics, en: economics, da: økonomi}
+      - {id: ethics, en: ethics, da: etik}
+      - {id: philosophy, en: philosophy, da: filosofi}
+      - {id: psychology, en: psychology, da: psykologi}
+      - {id: sociology, en: sociology, da: sociologi}
+  - id: culture_media
+    topics:
+      - {id: literature, en: literature, da: litteratur}
+      - {id: linguistics, en: linguistics, da: lingvistik}
+      - {id: visual_arts, en: visual arts, da: billedkunst}
+      - {id: music, en: music, da: musik}
+      - {id: film, en: film and television, da: film og tv}
+      - {id: media_literacy, en: media literacy, da: medieforståelse}
+      - {id: cultural_heritage, en: cultural heritage, da: kulturarv}
+      - {id: creative_practice, en: creative practice, da: kreativ praksis}
+  - id: relationships_community
+    topics:
+      - {id: interpersonal_communication, en: interpersonal communication, da: mellemmenneskelig kommunikation}
+      - {id: conflict_resolution, en: conflict resolution, da: konflikthåndtering}
+      - {id: parenting, en: parenting and family routines, da: forældreskab og familierutiner}
+      - {id: elder_support, en: supporting older adults, da: støtte til ældre}
+      - {id: community_organizing, en: community organizing, da: lokalt fællesskabsarbejde}
+      - {id: volunteering, en: volunteering, da: frivilligt arbejde}
+      - {id: event_planning, en: event planning, da: arrangementsplanlægning}
+      - {id: inclusive_practice, en: inclusive practices, da: inkluderende praksis}
+  - id: communication_artifacts
+    topics:
+      - {id: email, en: email communication, da: e-mailkommunikation}
+      - {id: reports, en: reports, da: rapporter}
+      - {id: proposals, en: proposals, da: forslag og oplæg}
+      - {id: presentations, en: presentations, da: præsentationer}
+      - {id: lesson_materials, en: lesson materials, da: undervisningsmaterialer}
+      - {id: policies_procedures, en: policies and procedures, da: politikker og procedurer}
+      - {id: public_information, en: public-facing information, da: borgerrettet information}
+      - {id: creative_text, en: creative text production, da: kreativ tekstproduktion}
+modes:
+  - {id: direct_question, en: answer a focused question, da: besvar et afgrænset spørgsmål}
+  - {id: explanation, en: explain a concept with useful context, da: forklar et begreb med relevant kontekst}
+  - {id: tutoring, en: teach interactively and check understanding, da: undervis interaktivt og afklar forståelsen}
+  - {id: planning, en: develop a practical plan, da: udarbejd en praktisk plan}
+  - {id: troubleshooting, en: diagnose and resolve a problem, da: diagnosticér og løs et problem}
+  - {id: comparison, en: compare alternatives using explicit criteria, da: sammenlign alternativer efter tydelige kriterier}
+  - {id: recommendation, en: recommend under realistic constraints, da: giv en anbefaling under realistiske begrænsninger}
+  - {id: judgement, en: make and justify a considered judgement, da: foretag og begrund en velovervejet vurdering}
+  - {id: development, en: develop an initial idea into a concrete result, da: udvikl en foreløbig idé til et konkret resultat}
+  - {id: brainstorming, en: generate and organize varied ideas, da: generér og organisér varierede idéer}
+  - {id: calculation, en: solve a quantitative problem and explain the method, da: løs et kvantitativt problem og forklar metoden}
+  - {id: critique, en: critique supplied material constructively, da: kritisér det vedlagte materiale konstruktivt, embedded_input: true}
+  - {id: revision, en: revise supplied material to stated requirements, da: revidér det vedlagte materiale efter angivne krav, embedded_input: true}
+  - {id: summarization, en: summarize supplied material to a specified scope, da: sammenfat det vedlagte materiale i et angivet omfang, embedded_input: true}
+  - {id: transformation, en: transform supplied material while preserving meaning, da: transformér det vedlagte materiale uden at ændre betydningen, embedded_input: true}
+  - {id: extraction, en: extract structured information from supplied material, da: udtræk struktureret information fra det vedlagte materiale, embedded_input: true}
+  - {id: classification, en: classify supplied examples using clear criteria, da: klassificér de vedlagte eksempler efter klare kriterier, embedded_input: true}
+  - {id: verification, en: verify claims or work shown in supplied material, da: kontrollér påstande eller udregninger i det vedlagte materiale, embedded_input: true}
+  - {id: evaluation, en: evaluate supplied work against a rubric, da: evaluér det vedlagte arbejde efter en rubric, embedded_input: true}
+  - {id: decision_support, en: structure a decision with tradeoffs and uncertainty, da: strukturér en beslutning med afvejninger og usikkerhed}

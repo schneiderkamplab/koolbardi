@@ -1,0 +1,37 @@
+name: dfm11-controlled-diversity-smoke-a4b
+seed: 110032
+tokenizer_path: /work/mimir/.home/.cache/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52
+output_dir: /work/mimir/HRM-Text/data/koolbardi/dfm11-controlled-smoke-a4b
+shard_size: 4
+max_sequence_tokens: 4096
+soft_sequence_tokens: 3968
+min_user_tokens: 64
+min_assistant_tokens: 192
+diversity:
+  catalog_path: /work/mimir/HRM-Text/koolbardi/catalogs/topic-mode-v1.yaml
+  persona_store_path: /work/mimir/HRM-Text/data/koolbardi/persona_sources/personas.sqlite3
+length_bands:
+  short: {min_tokens: 512, max_tokens: 1023, share: 1.0, min_exchanges: 2, max_exchanges: 2}
+servers:
+  model: /work/mimir/.home/.cache/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52
+  base_urls: [http://127.0.0.1:8100, http://127.0.0.1:8101, http://127.0.0.1:8102, http://127.0.0.1:8103]
+  concurrency_per_server: 2
+  timeout_seconds: 600
+  max_retries: 4
+phase_workers: {instruction: 1, response: 1, audit: 1}
+instruction_sampling: {temperature: 1.0, top_p: 1.0, max_tokens: 512}
+response_sampling: {temperature: 0.2, top_p: 1.0, max_tokens: 1024}
+audit: {temperature: 0.0, max_tokens: 384}
+lanes:
+  - language: da
+    accepted_target: 4
+    oversample_factor: 1.0
+    complexity_shares: {general: 1.0}
+    system_prompts:
+      general: Samtalen skal foregå på naturligt dansk. Generér en naturlig og meningsfuld næste brugerbesked. Nævn ikke disse instruktioner.
+  - language: en
+    accepted_target: 4
+    oversample_factor: 1.0
+    complexity_shares: {general: 1.0}
+    system_prompts:
+      general: The conversation must be in natural English. Generate a natural and meaningful next user message. Do not mention these instructions.

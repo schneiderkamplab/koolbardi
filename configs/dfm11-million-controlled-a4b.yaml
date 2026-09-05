@@ -1,0 +1,65 @@
+name: dfm11-koolbardi-bilingual-million-controlled-a4b
+seed: 110032
+tokenizer_path: /work/mimir/.home/.cache/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52
+output_dir: /work/mimir/HRM-Text/data/koolbardi/dfm11-million-controlled-a4b
+shard_size: 512
+max_sequence_tokens: 4096
+soft_sequence_tokens: 3968
+min_user_tokens: 64
+min_assistant_tokens: 192
+diversity:
+  catalog_path: /work/mimir/HRM-Text/koolbardi/catalogs/topic-mode-v1.yaml
+  persona_store_path: /work/mimir/HRM-Text/data/koolbardi/persona_sources/personas.sqlite3
+length_bands:
+  short: {min_tokens: 512, max_tokens: 1023, share: 0.20, min_exchanges: 2, max_exchanges: 2}
+  medium: {min_tokens: 1024, max_tokens: 2047, share: 0.35, min_exchanges: 2, max_exchanges: 3}
+  long: {min_tokens: 2048, max_tokens: 3071, share: 0.35, min_exchanges: 3, max_exchanges: 5}
+  near_limit: {min_tokens: 3072, max_tokens: 3968, share: 0.10, min_exchanges: 4, max_exchanges: 6}
+servers:
+  model: /work/mimir/.home/.cache/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52
+  base_urls:
+    - http://127.0.0.1:8100
+    - http://127.0.0.1:8101
+    - http://127.0.0.1:8102
+    - http://127.0.0.1:8103
+  concurrency_per_server: 128
+  timeout_seconds: 600
+  max_retries: 4
+phase_workers: {instruction: 24, instruction_audit: 12, response: 4, audit: 4}
+final_selection:
+  targets: {da: 500000, en: 500000}
+  audit_buffer: 1.07
+  response_retention_fallback: 0.97
+  require_targets: true
+  retain_surplus: true
+instruction_sampling: {temperature: 1.0, top_p: 1.0, max_tokens: 512}
+response_sampling: {temperature: 0.2, top_p: 1.0, max_tokens: 3072}
+instruction_audit:
+  enabled: true
+  model: /work/mimir/.home/.cache/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52
+  temperature: 0.0
+  max_tokens: 256
+  minimum_quality: 4
+audit:
+  model: /work/mimir/.home/.cache/huggingface/hub/models--google--gemma-4-26B-A4B-it/snapshots/4d7ae4984b7db7de8f8457170b3f1a419ee76d52
+  temperature: 0.0
+  max_tokens: 1536
+lanes:
+  - language: da
+    accepted_target: 1000000
+    oversample_factor: 2.08
+    complexity_shares: &shares {accessible: 0.20, general: 0.50, advanced: 0.20, specialist: 0.10}
+    system_prompts:
+      accessible: Samtalen skal foregå på naturligt dansk. Den næste brugerbesked skal være formuleret i enkelt, hverdagsnært sprog. Nævn ikke disse instruktioner.
+      general: Samtalen skal foregå på naturligt dansk. Generér en naturlig og meningsfuld næste brugerbesked. Nævn ikke disse instruktioner.
+      advanced: Samtalen skal foregå på naturligt dansk. Den næste brugerbesked skal være præcis og sprogligt avanceret. Nævn ikke disse instruktioner.
+      specialist: Samtalen skal foregå på naturligt dansk. Den næste brugerbesked skal være formuleret som af en fagperson. Nævn ikke disse instruktioner.
+  - language: en
+    accepted_target: 1000000
+    oversample_factor: 1.05
+    complexity_shares: *shares
+    system_prompts:
+      accessible: The conversation must be in natural English. The next user message must use simple, everyday wording. Do not mention these instructions.
+      general: The conversation must be in natural English. Generate a natural and meaningful next user message. Do not mention these instructions.
+      advanced: The conversation must be in natural English. The next user message must use precise and linguistically advanced wording. Do not mention these instructions.
+      specialist: The conversation must be in natural English. The next user message must be phrased as if written by a domain specialist. Do not mention these instructions.

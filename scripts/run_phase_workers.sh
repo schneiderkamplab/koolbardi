@@ -4,7 +4,8 @@ set -euo pipefail
 CONFIG=${1:?usage: run_phase_workers.sh CONFIG PHASE [WORKERS]}
 PHASE=${2:?usage: run_phase_workers.sh CONFIG PHASE [WORKERS]}
 WORKERS=${3:-8}
-LOG_DIR=${LOG_DIR:-/work/dfm/HRM-Text/logs/koolbardi/workers}
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
+LOG_DIR=${LOG_DIR:-$REPO_ROOT/logs/koolbardi/workers}
 mkdir -p "$LOG_DIR"
 
 for ((worker=0; worker<WORKERS; worker++)); do
@@ -13,4 +14,3 @@ for ((worker=0; worker<WORKERS; worker++)); do
     >"$LOG_DIR/${PHASE}-${worker}.log" 2>&1 &
   echo $! >"$LOG_DIR/${PHASE}-${worker}.pid"
 done
-

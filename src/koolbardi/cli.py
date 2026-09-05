@@ -10,6 +10,7 @@ import typer
 from .config import load_config
 from .pipeline import advance, finalize, initialize, run_worker
 from .queue import TaskQueue
+from .selection import select_audit_tasks, select_response_tasks
 
 app = typer.Typer(no_args_is_help=True, help="Bilingual Magpie-style data generation.")
 
@@ -33,12 +34,17 @@ def init(config_path: Path = typer.Argument(..., exists=True)) -> None:
 @app.command()
 def work(
     config_path: Path = typer.Argument(..., exists=True),
-    phase: Literal["instruction", "response", "audit"] = typer.Option(...),
+    phase: Literal["instruction", "instruction_audit", "response", "audit"] = typer.Option(...),
     once: bool = False,
 ) -> None:
     """Claim and process phase shards atomically until the queue is empty."""
     config, queue = context(config_path)
-    typer.echo(f"processed={asyncio.run(run_worker(config, queue, phase, once))}")
+    processed = asyncio.run(run_worker(config, queue, phase, once)
+    )
+    failed = queue.count(phase, "failed")
+    typer.echo(f"processed={processed} failed={failed}")
+    if failed:
+        raise typer.Exit(code=1)
 
 
 @app.command()
@@ -46,6 +52,22 @@ def advance_queue(config_path: Path = typer.Argument(..., exists=True)) -> None:
     """Enqueue downstream shards whose atomic upstream files exist."""
     config, queue = context(config_path)
     typer.echo(f"added={advance(config, queue)}")
+
+
+@app.command()
+def select_responses(config_path: Path = typer.Argument(..., exists=True)) -> None:
+    """Select a balanced, extensible subset of pending response shards."""
+    config, queue = context(config_path)
+    result = select_response_tasks(config, queue)
+    typer.echo(json.dumps({k: v for k, v in result.items() if k != "selected_shard_keys"}, indent=2))
+
+
+@app.command()
+def select_audits(config_path: Path = typer.Argument(..., exists=True)) -> None:
+    """Select buffered audit shards for exact balanced final targets."""
+    config, queue = context(config_path)
+    result = select_audit_tasks(config, queue)
+    typer.echo(json.dumps({k: v for k, v in result.items() if k != "selected_shard_keys"}, indent=2))
 
 
 @app.command()
@@ -61,6 +83,16 @@ def reset_stale(config_path: Path = typer.Argument(..., exists=True), age_second
 
 
 @app.command()
+def reset_failed(
+    config_path: Path = typer.Argument(..., exists=True),
+    phase: Literal["instruction", "instruction_audit", "response", "audit"] | None = typer.Option(None),
+) -> None:
+    """Reset terminal failures after their underlying cause has been corrected."""
+    config, queue = context(config_path)
+    typer.echo(f"reset={queue.reset_failed(phase)}")
+
+
+@app.command()
 def finalize_dataset(
     config_path: Path = typer.Argument(..., exists=True),
     output: Path = typer.Option(..., "--output", "-o"),
@@ -68,4 +100,3 @@ def finalize_dataset(
     config, queue = context(config_path)
     del queue
     typer.echo(json.dumps(finalize(config, output), indent=2))
-

@@ -1,14 +1,20 @@
 # Koolbardi
 
 Koolbardi is a standalone, resumable implementation of bilingual Magpie-style
-synthetic conversation generation. It generates user requests from a model's
-unfinished native user-turn prefix, generates responses in a fresh native chat,
-audits each pair, and finalizes a balanced Gemma-native JSONL dataset.
+synthetic conversation generation. It asks the teacher through its native chat
+template to generate user requests, optionally audits requests before spending
+response-generation compute, generates responses in a fresh native chat, audits
+each pair, and finalizes a balanced Gemma-native JSONL dataset. Explicit
+meta-requests are used because Gemma 4 A4B emits control-channel fragments when
+continued directly from an unfinished user-turn prefix.
 
 The upstream Magpie repository is useful as a behavioral reference, but it is
 not a dependency, import, submodule, or vendored component of Koolbardi. This
 package uses its own typed configuration, OpenAI-compatible client, SQLite WAL
 queue, atomic JSONL shards, validation, and finalization code.
+
+Detailed architecture, data-contract, serving, recovery, and campaign knowledge
+lives in the [OKF v0.2 bundle](wiki/index.md).
 
 ## Safety properties
 
@@ -19,14 +25,20 @@ queue, atomic JSONL shards, validation, and finalization code.
   `magpie_system_prompt` but is absent from final `messages`.
 - Prefixes, boundaries, stop IDs, and template hashes are derived from the
   configured tokenizer instead of hard-coded from an older Gemma release.
-- Danish and English quotas are applied after audit and deduplication.
+- Danish and English targets are reported after audit and deduplication; all
+  accepted rows are retained rather than capped destructively.
 - Complete rendered conversations must fit the configured context limit; data
   is rejected rather than truncated.
+- Every generated user/assistant turn must return API `finish_reason=stop` and
+  pass a conservative terminal-boundary check. Length-capped turns are retried
+  with smaller language-calibrated word targets and are withheld if unresolved.
+- When `instruction_audit.enabled` is true, only requests passing deterministic
+  checks and the model judge can enter response generation.
 
 ## Installation
 
 ```bash
-cd /work/dfm/HRM-Text/koolbardi
+cd /work/mimir/HRM-Text/koolbardi
 uv pip install -e '.[dev]'
 ```
 
@@ -37,20 +49,31 @@ phase. `advance-queue` is idempotent and only observes fully renamed files.
 
 ```bash
 scripts/launch_vllm_servers.sh
-koolbardi init configs/dfm11-pilot.yaml
-scripts/run_phase_workers.sh configs/dfm11-pilot.yaml instruction 8
-koolbardi advance-queue configs/dfm11-pilot.yaml
-scripts/run_phase_workers.sh configs/dfm11-pilot.yaml response 8
-koolbardi advance-queue configs/dfm11-pilot.yaml
-scripts/run_phase_workers.sh configs/dfm11-pilot.yaml audit 8
-koolbardi finalize-dataset configs/dfm11-pilot.yaml \
-  --output ../data/koolbardi/dfm11-pilot/final.jsonl
+scripts/run_campaign.sh configs/dfm11-pilot-smoke-a4b.yaml
+scripts/run_campaign.sh configs/dfm11-pilot-10k-a4b.yaml
 ```
 
 Use `koolbardi status CONFIG` for queue counts and `koolbardi reset-stale
 CONFIG --age-seconds 3600` after verifying that abandoned workers are dead.
+After correcting the underlying cause of a terminal failure, use
+`koolbardi reset-failed CONFIG --phase PHASE`.
 
-The production config is intentionally provisional. Run and inspect the 10,000
-accepted rows per language pilot before freezing temperatures, category caps,
-oversampling factors, or the million-row production campaign.
+The A4B production pilot targets 10,000 accepted chats total: 5,000 Danish and
+5,000 English. Every final conversation has 2--6 exchanges and is independently
+rendered with the Gemma 4 tokenizer; rows above 4,096 tokens are rejected rather
+than truncated.
 
+## Concurrency
+
+`servers.concurrency_per_server` is the per-worker HTTP connection and request
+limit. `phase_workers` controls process fan-out, so the approximate aggregate
+limit per server is their product. Keep the server's `--max-num-seqs` at least
+as large as the intended aggregate; the launcher defaults to 3,072.
+
+Concurrency is deliberately phase-specific. Initial user turns are short and
+need thousands of live sequences to occupy the KV cache. Multi-turn response
+and audit requests carry much longer prompts and therefore use fewer workers.
+For the million-row campaign, the sustained settings are 24 instruction workers
+and four response/audit workers at 128 requests per server per worker. Check
+`vllm:kv_cache_usage_perc`, running/waiting requests, preemptions, and generated
+token throughput before increasing these settings further.

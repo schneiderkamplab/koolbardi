@@ -48,9 +48,10 @@ class TaskQueue:
     def connect(self) -> Iterator[sqlite3.Connection]:
         conn = sqlite3.connect(self.path, timeout=60, isolation_level=None)
         conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=FULL")
         conn.execute("PRAGMA busy_timeout=60000")
+        if conn.execute("PRAGMA journal_mode").fetchone()[0].lower() != "wal":
+            conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA synchronous=FULL")
         try:
             yield conn
         finally:
@@ -63,6 +64,23 @@ class TaskQueue:
                 (phase, shard_key, json.dumps(payload, sort_keys=True)),
             )
             return cursor.rowcount == 1
+
+    def add_many(self, tasks: list[tuple[str, str, dict]]) -> int:
+        if not tasks:
+            return 0
+        rows = [
+            (phase, shard_key, json.dumps(payload, sort_keys=True))
+            for phase, shard_key, payload in tasks
+        ]
+        with self.connect() as conn:
+            before = conn.total_changes
+            conn.execute("BEGIN IMMEDIATE")
+            conn.executemany(
+                "INSERT OR IGNORE INTO tasks(phase, shard_key, payload) VALUES (?, ?, ?)",
+                rows,
+            )
+            conn.execute("COMMIT")
+            return conn.total_changes - before
 
     def claim(self, phase: str, worker: str | None = None) -> Task | None:
         worker = worker or f"{os.uname().nodename}:{os.getpid()}"
@@ -108,9 +126,30 @@ class TaskQueue:
             )
             return cursor.rowcount
 
+    def reset_failed(self, phase: str | None = None) -> int:
+        with self.connect() as conn:
+            if phase is None:
+                cursor = conn.execute(
+                    "UPDATE tasks SET status='pending', attempts=0, worker=NULL, claimed_at=NULL, "
+                    "finished_at=NULL, error='reset terminal failure' WHERE status='failed'"
+                )
+            else:
+                cursor = conn.execute(
+                    "UPDATE tasks SET status='pending', attempts=0, worker=NULL, claimed_at=NULL, "
+                    "finished_at=NULL, error='reset terminal failure' WHERE status='failed' AND phase=?",
+                    (phase,),
+                )
+            return cursor.rowcount
+
     def status(self) -> list[dict]:
         with self.connect() as conn:
             return [dict(row) for row in conn.execute(
                 "SELECT phase, status, COUNT(*) AS count FROM tasks GROUP BY phase, status ORDER BY phase, status"
             )]
 
+    def count(self, phase: str, status: str) -> int:
+        with self.connect() as conn:
+            row = conn.execute(
+                "SELECT COUNT(*) FROM tasks WHERE phase=? AND status=?", (phase, status)
+            ).fetchone()
+            return int(row[0])
